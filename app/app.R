@@ -1,6 +1,7 @@
 # load packages ----
 library(shiny)
 library(palmerpenguins)
+library(tidyverse)
 
 # user interface ----
 ui <- fluidPage(
@@ -46,7 +47,7 @@ server <- function(input, output) {
       geom_point() +
       scale_color_manual(values = c("#FEA346", "#B251F1", "#4BA4A4")) +
       scale_shape_manual(values = c(19, 17, 15)) +
-      labs(x = "Flipper length (mm)", y = "Bill lenght (mm)",
+      labs(x = "Flipper length (mm)", y = "Bill length (mm)",
            color = "Penguin species", shape = "Penguin species") +
       theme_minimal() +
       theme(legend.position = c(0.85, 0.2),
