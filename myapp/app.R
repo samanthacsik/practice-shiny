@@ -98,8 +98,9 @@ server <- function(input, output) {
   output$flipperLength_hist <- renderPlot({
     
     # validate ----
+    # alt: need(input$island != "", "Please..."
     validate(
-      need(input$island != "", "Please select at least one island to visualize.")
+      need(length(input$island) > 0, "Please select at least one island to visualize.")
     )
     
     # filter island data ----
