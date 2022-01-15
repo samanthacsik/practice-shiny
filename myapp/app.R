@@ -14,7 +14,7 @@ library(shinyWidgets)
 ui <- fluidPage(
   
   # set theme ----
-  theme = bslib::bs_theme(bootswatch = "minty"),
+  #theme = bslib::bs_theme(bootswatch = "minty"),
   
   # create navbar ----
   navbarPage(
@@ -22,7 +22,14 @@ ui <- fluidPage(
     
     # background tab ----
     tabPanel("Background",
-             em("some background information here")),
+             sidebarLayout(
+               sidebarPanel(radioButtons(
+                 inputId = "img", label = "Choose a penguin to display:",
+                 choices = c("All penguins", "Sassy chinstrap", "Staring gentoo", "Adorable adelie"),
+                 selected = "All penguins")),
+               mainPanel(
+                 #img(src = "all_penguins.jpeg", height = 200, width = 400),
+                 imageOutput(outputId = "penguin_img")))),
     
     # penguins tab ----
     tabPanel("Antarctic Penguins",
@@ -46,9 +53,9 @@ ui <- fluidPage(
                                     selected = c("Torgersen", "Dream", "Biscoe"),
                                     multiple = T),
                         
-                        # bin width input ----
-                        sliderInput(inputId = "bin_width", label = "Select bin width:",
-                                    value = 3, max = 10, min = 1),
+                        # bin number input ----
+                        sliderInput(inputId = "bin_num", label = "Select number of bins:",
+                                    value = 25, max = 100, min = 1),
                        
                         # flipper length plot output ----
                         plotOutput(outputId = "flipperLength_hist")))),
@@ -74,15 +81,37 @@ ui <- fluidPage(
 # server instructions ----
 server <- function(input, output) {
   
-  # render the scatter plot ----
-  output$bodyMass_scatterPlot <- renderPlot({
+  # render penguin images ----
+  output$penguin_img <- renderImage({
 
-    # filter body mass data ----
-    body_mass_dat <- penguins %>%
+    if(input$img == "All penguins"){
+      list(src = "www/all_penguins.jpeg", height = 240, width = 300,
+           alt = "")
+    }
+    else if(input$img == "Sassy chinstrap"){
+      list(src = "www/sassy_chinstrap.jpeg", height = 240, width = 300,
+           alt ="")
+    }
+    else if(input$img == "Staring gentoo"){
+      list(src = "www/staring_gentoo.jpeg", height = 240, width = 300,
+           alt = "")
+    }
+    else if(input$img == "Adorable adelie"){
+      list(src = "www/adelie_gif.gif", height = 240, width = 300,
+           alt = "An adelie penguin using it's feet to push itself along the ice on it's belly.")
+    }
+    
+  }, deleteFile = FALSE)
+  
+  # filter body mass data ----
+  body_mass_df <- reactive({ 
+    penguins %>% 
       filter(body_mass_g %in% input$body_mass[1]:input$body_mass[2])
-
-    # plot scatterplot ----
-    ggplot(na.omit(body_mass_dat),
+  })
+  
+  # render scatter plot ----
+  output$bodyMass_scatterPlot <- renderPlot({
+    ggplot(na.omit(body_mass_df()),
            aes(x = flipper_length_mm, y = bill_length_mm, color = species, shape = species)) +
       geom_point() +
       scale_color_manual(values = c("Adelie" = "#FEA346", "Chinstrap" = "#B251F1", "Gentoo" = "#4BA4A4")) +
@@ -92,24 +121,26 @@ server <- function(input, output) {
       theme_minimal() +
       theme(legend.position = c(0.85, 0.2),
             legend.background = element_rect(color = "white"))
+    
   })
   
-  # render the flipper length histogram
-  output$flipperLength_hist <- renderPlot({
-    
-    # validate ----
+  # filter island data ----
+  island_df <- reactive({
+  
     # alt: need(input$island != "", "Please..."
     validate(
       need(length(input$island) > 0, "Please select at least one island to visualize.")
     )
     
-    # filter island data ----
-    filtered_island <- penguins %>% 
+    penguins %>% 
       filter(island == input$island)
+  })
+  
+  # render the flipper length histogram ----
+  output$flipperLength_hist <- renderPlot({
     
-    # plot histogram ----
-    ggplot(na.omit(filtered_island), aes(x = flipper_length_mm, fill = species)) +
-      geom_histogram(alpha = 0.6, binwidth = input$bin_width) +
+    ggplot(na.omit(island_df()), aes(x = flipper_length_mm, fill = species)) +
+      geom_histogram(alpha = 0.6, bins = input$bin_num) +
       scale_fill_manual(values = c("Adelie" = "#FEA346", "Chinstrap" = "#B251F1", "Gentoo" = "#4BA4A4")) +
       labs(x = "Flipper length (mm)", y = "Frequency", 
            fill = "Penguin species") +
@@ -131,5 +162,5 @@ server <- function(input, output) {
   # end server ----
 }
 
-# run the application ----
+# combine UI & server into an app ----
 shinyApp(ui = ui, server = server)
