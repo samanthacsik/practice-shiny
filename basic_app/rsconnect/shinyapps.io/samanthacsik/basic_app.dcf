@@ -1,0 +1,11 @@
+name: basic_app
+title:
+username:
+account: samanthacsik
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5485820
+bundleId: 5494707
+url: https://samanthacsik.shinyapps.io/basic_app/
+when: 1642796080.55534
+lastSyncTime: 1642796080.55535
