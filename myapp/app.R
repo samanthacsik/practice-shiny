@@ -76,16 +76,14 @@ ui <- fluidPage(
                 tabPanel("Palmer Station Weather Data",
                          sidebarLayout(
                            sidebarPanel(
-                             # weather radioButton input ----
-                             radioButtons(
-                               inputId = "month", label = "Choose a month:",
-                               # choices = c("01" = "January", "02" = "February", "03" = "March", "04" = "April",
-                               #             "05" = "May", "06" = "June", "07" = "July", "08" = "August",
-                               #             "09" = "September", "10" = "October", "11" = "November", "12" = "December"),
+                             # weather checkboxGroupInput ----
+                             checkboxGroupInput(
+                               inputId = "month", label = "Choose a month(s):",
                                choices = c("January", "February", "March", "April",
                                            "May", "June", "July", "August",
                                            "September", "October", "November", "December"),
-                               selected = "January")
+                               selected = c("January", "February")
+                             )
                            ),
                            mainPanel(
                              # weather table output----
@@ -183,7 +181,7 @@ server <- function(input, output) {
   month_df <- reactive({
     
     temp_summary %>% 
-      filter(month_name == input$month)
+      filter(month_name %in% input$month)
     
   })
   
@@ -192,7 +190,7 @@ server <- function(input, output) {
     DT::datatable(month_df(),
                   class = 'cell-border stripe',
                   colnames = c('Year', "Month", 'Mean Air Temp.', 'Max. Air Temp.', 'Min. Air Temp.'),
-                  options = list(pageLength = 5),
+                  #options = list(pageLength = 5),
                   caption = htmltools::tags$caption(
                     style = 'caption-side: top; text-align: left;',
                     'Table 2: ', htmltools::em('Mean, maximum, and minimum monthly air temperatures (°C) recorded at Palmer Station, Antarctica from 1989 - 2019.'))) 

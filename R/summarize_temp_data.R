@@ -1,4 +1,4 @@
-# packages
+# packages ------------------------------------------
 library(tidyverse)
 library(janitor)
 
@@ -21,5 +21,5 @@ temp_month_summary <- weather_data %>%
   select(year, month_name, mean_temp, max_temp, min_temp)
 
 # save as new file to myapp/data directory ------------------------------------------
-write_csv(temp_month_summary, "./myapp/data/temp_month_summary.csv")
-saveRDS(temp_month_summary, "./myapp/data/temp_month_summary.rds")
+write_csv(temp_month_summary, here::here(".", "myapp", "data", "temp_month_summary.csv"))
+saveRDS(temp_month_summary, here::here(".", "myapp", "data", "temp_month_summary.rds"))
