@@ -87,7 +87,7 @@ ui <- fluidPage(
                            ),
                            mainPanel(
                              # weather table output----
-                             dataTableOutput(outputId = "temp_table")
+                             DT::dataTableOutput(outputId = "temp_table")
                              )
                          )
                      )
