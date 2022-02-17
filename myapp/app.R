@@ -23,42 +23,59 @@ ui <- fluidPage(
 
     # background tab ----
     tabPanel("Background",
+             
              sidebarLayout(
+               
                sidebarPanel(
+                 
                  # penguin image radioButton input ----
                  radioButtons(
                    inputId = "img", label = "Choose a penguin to display:",
                    choices = c("All penguins", "Sassy chinstrap", "Staring gentoo", "Adorable adelie"),
                    selected = "All penguins")
+                 
                  ),
+               
                mainPanel(
+                 
                  imageOutput(outputId = "penguin_img")
+                 
                  )
                )
              ),
 
     # penguins tab ----
     tabPanel("Antarctic Penguins",
+             
              tabsetPanel(
+               
                tabPanel("Scatterplot",
+                        
                         # body mass slider input ----
                         sliderInput(inputId = "body_mass", label = "Select a range of body masses (g):",
                                     value = c(3000, 4000), min = 2700, max = 6300),
+                        
                          # body mass plot output ----
                         plotOutput(outputId = "bodyMass_scatterPlot")
+                        
                         ),
+               
                tabPanel("Histogram",
+                        
                      # island input ----
                         pickerInput(inputId = "island", label = "Select an island:",
                                     choices = c("Torgersen", "Dream", "Biscoe"),
-                                    options = list(`actions-box` = TRUE),
+                                    options = pickerOptions(actionsBox = TRUE),
                                     selected = c("Torgersen", "Dream", "Biscoe"),
                                     multiple = T),
+                     
                         # bin number input ----
                         sliderInput(inputId = "bin_num", label = "Select number of bins:",
                                     value = 25, max = 100, min = 1),
+                     
                         # flipper length plot output ----
                         plotOutput(outputId = "flipperLength_hist")
+                     
                         )
                )
              ),
@@ -66,16 +83,25 @@ ui <- fluidPage(
     # palmer weather tab ----
     tabPanel("Antarctic Weather",
              em("some widget to explore weather data here")),
+    
     # explore data tab ----
     tabPanel("Explore the Data",
+             
              tabsetPanel(
+               
                 tabPanel("Penguin Data",
+                         
                         # penguin data table output ----
                         DT::dataTableOutput(outputId = "penguin_data")
+                        
                         ),
+                
                 tabPanel("Palmer Station Weather Data",
+                         
                          sidebarLayout(
+                           
                            sidebarPanel(
+                             
                              # weather checkboxGroupInput ----
                              checkboxGroupInput(
                                inputId = "month", label = "Choose a month(s):",
@@ -83,11 +109,15 @@ ui <- fluidPage(
                                            "May", "June", "July", "August",
                                            "September", "October", "November", "December"),
                                selected = c("January", "February")
+                               
                              )
                            ),
+                           
                            mainPanel(
+                             
                              # weather table output----
                              DT::dataTableOutput(outputId = "temp_table")
+                             
                              )
                          )
                      )
