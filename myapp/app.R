@@ -6,7 +6,6 @@ library(DT)
 library(bslib)
 library(thematic)
 library(shinyWidgets)
-library(reactlog)
 
 # import data ----
 temp_summary <- readRDS("data/temp_month_summary.rds")
